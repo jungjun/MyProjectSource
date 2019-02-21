@@ -9,6 +9,7 @@ var canJump;
 var playerJump;
 var pipe;
 var counter;
+var weapon;
 // game Option
 var rollSpeed = 150;
 var platformTickTime = 1000;
@@ -21,17 +22,21 @@ var Game = {
         game.load.image('backGround','./assets/images/backGround.png');
         game.load.image('land','./assets/images/Land.png');
         game.load.spritesheet('mummy','./assets/images/metalslug_mummy.png',37,45,18);
-        game.load.image('bird','assets/images/bird.png');
+        game.load.image('bullet','assets/images/bird.png');
         game.load.image('pipe','assets/images/pipe.png');
+        //weapon = game.add.weapon(30, 'bullet');
         },
 
     create: function() {
+
+     
         
         field = game.add.tileSprite(0,0,800,600,'backGround');
         //land = game.add.tileSprite(0,450,800,150,'land');
         land = game.add.sprite(-800,450,'land');
-       // bird = game.add.sprite(100,100,'bird');
+       //bird = this.game.add.sprite(100,100,'bullet');
         mummy = game.add.sprite(100,100,'mummy');
+        weapon = game.add.weapon(30, 'bullet');
         var walk = mummy.animations.add('walk');
         mummy.animations.play('walk',30,true);
         mummy.scale.set(1.5);
@@ -65,8 +70,12 @@ var Game = {
 
      game.time.events.loop(Phaser.Timer.SECOND/2, this.updateCounter, this); // 버티는 시간 (기록)
      
-     
-       
+      //weapon = game.add.weapon(30, 'bullet');
+      // weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+      // weapon.bulletAngleOffset = 90;
+      // weapon.bulletSpeed = 400;
+      // weapon.fireRate = 60;
+      // weapon.trackSprite(mummy, 14, 0);
     },
 
     update: function(){
@@ -159,6 +168,7 @@ var Game = {
       counter++;
       text.setText('Counter: ' + counter + "M");
     },
+
     
     // LandMummy: function()
     // {
