@@ -10,6 +10,7 @@ var playerJump;
 var pipe;
 var counter;
 var weapon;
+var mob;
 // game Option
 var rollSpeed = 150;
 var platformTickTime = 1000;
@@ -24,6 +25,7 @@ var Game = {
         game.load.spritesheet('mummy','./assets/images/metalslug_mummy.png',37,45,18);
         game.load.image('bullet','assets/images/bird.png');
         game.load.image('pipe','assets/images/pipe.png');
+        game.load.image('mob','assets/images/Cal-character.png');
         //weapon = game.add.weapon(30, 'bullet');
         },
 
@@ -56,10 +58,8 @@ var Game = {
         game.physics.arcade.enable(mummy); 
         game.physics.arcade.enable(land);
         //game.physics.arcade.enable(bird);
-        land.body.immovable = true;
+        land.body.immovable = true;   //물리에 움직이지 않고 고정됨 
 
-       // game.world.enableBody = true;   // 모든 객체에 물리 적용
-        //mummy.body.velocity.y = 1000;
         mummy.body.gravity.y = 1000;
         land.body.velocity.x = -rollSpeed;
        // mummy.body.velocity.x = rollSpeed;
@@ -69,30 +69,34 @@ var Game = {
      this.timer = game.time.events.loop(platformTickTime, this.addRowOfPipes, this); 
 
      game.time.events.loop(Phaser.Timer.SECOND/2, this.updateCounter, this); // 버티는 시간 (기록)
-     
-      //weapon = game.add.weapon(30, 'bullet');
-      // weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-      // weapon.bulletAngleOffset = 90;
-      // weapon.bulletSpeed = 400;
-      // weapon.fireRate = 60;
-      // weapon.trackSprite(mummy, 14, 0);
+      
+      weapon = game.add.weapon(30, 'bullet');
+      weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;    // 총알이 삭제되는 기준 
+      weapon.bulletSpeed = 400;                                   //총알 속도
+      weapon.fireRate = 60;
+      weapon.trackSprite(mummy, 30, 0, true); //캐릭터 방향대로 발사 
+      game.physics.arcade.enable(weapon);
+      //weapon.bulletCollideWorldBounds=true;
+
     },
 
     update: function(){
         field.tilePosition.x -= backV;
         //land.tilePosition.x -=landV;
         mummy.x = 100;
-        game.physics.arcade.collide(mummy,land);
-
+      game.physics.arcade.collide(mummy,land);  // 플레이어 캐릭터와 땅의 콜리젼
       
-      // game.physics.arcade.overlap(mummy, land, this.LandMummy, null, this);
+      game.physics.arcade.overlap(weapon.bullets, mob, this.damageMob, null, this);
+      //game.physics.arcade.collide(mob,weapon);
+
       if( !pipe ){
         console.log("비어 있음");
       }else{
         console.log("값이 있음");
-        game.physics.arcade.collide(mummy,this.pipes);
+        game.physics.arcade.collide(mummy,this.pipes);  // 플레이어와 플랫폼의 충돌
+        game.physics.arcade.collide(mob,this.pipes);  // 몬스터와 플랫폼의 충돌
       }
-      //game.physics.aracade.collide(mummy,pipe); 
+
       if(pipe < 0)
       {
         console.log("플랫폼 삭제");
@@ -126,6 +130,8 @@ var Game = {
             playerJump++;
           
         }
+
+        weapon.fire();
     },
 
     addOnePipe: function(x,y){
@@ -137,11 +143,11 @@ var Game = {
         pipe.body.velocity.x = -platfromMoveSpeed; // 파이프 생성 후 왼쪽으로 이동
        // this.pipes.align(rnd, -1, 50, 50);
 
-        //  Pick a random number between -2 and 6
+       //  Pick a random number between -2 and 6
        // var rand = game.rnd.realInRange(1, 3.5);
-        //var r = rand.toFixed(2);
+       //var r = rand.toFixed(2);
        // console.log(r);
-        //  Set the scale of the sprite to the random value
+       //  Set the scale of the sprite to the random value
        // pipe.scale.setTo(r, 0.7);
 
 
@@ -150,23 +156,45 @@ var Game = {
     },
 
     addRowOfPipes: function() {
-
-        // 무작위로 1과 5 사이의 숫자 선택
-        // 구멍 위치가됩니다.
         //var hole = Math.floor(Math.random() * 2) + 1;
          var rand = game.rnd.realInRange(0,3); 
          var hole = game.rnd.realInRange(300,470);
-        // 6 개의 파이프 추가
-        // '구멍'과 '구멍 + 1' 위치에 하나의 큰 구멍이있는 상태
-        // for (var i = 0; i < 8; i++)
-        //     if (i != hole && i != hole + 1)
-        for(var i =0; i< rand; i++)
+       
+         for(var i =0; i< rand; i++){
             this.addOnePipe(i * 50 + 650, hole);
+         }
+
+         var rateAddMob = game.rnd.realInRange(0,100);
+        
+         if(rateAddMob > 50){
+            mob = game.add.sprite(650,hole-50,'mummy'); // 몹 생성
+            game.physics.arcade.enable(mob);          //몹에 물리를 적용함
+            //mob.body.gravity.y = 1000;
+          
+            mob.animations.play('walk',30,true);
+
+            mob.enableBody = true;
+            mob.physicsBodyType = Phaser.Physics.ARCADE;
+            mob.body.velocity.x = -platfromMoveSpeed;
+
+        } 
     },
 
     updateCounter : function(){
       counter++;
       text.setText('Counter: ' + counter + "M");
+    },
+
+    redner : function(){
+      weapon.debug();
+    },
+
+    damageMob : function(bullet, mob){
+      console.log("Damage Monster");
+      bullet.kill();
+      mob.kill();
+      
+
     },
 
     
