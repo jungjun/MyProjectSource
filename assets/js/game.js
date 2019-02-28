@@ -11,11 +11,12 @@ var pipe;
 var counter;
 var weapon;
 var mob;
+
 // game Option
 var rollSpeed = 150;
 var platformTickTime = 1000;
 var platfromMoveSpeed = 250;
-
+var fireTime = 0;
 
 var Game = {
     preload: function() {
@@ -33,51 +34,58 @@ var Game = {
 
      
         
-        field = game.add.tileSprite(0,0,800,600,'backGround');
-        //land = game.add.tileSprite(0,450,800,150,'land');
-        land = game.add.sprite(-800,450,'land');
-       //bird = this.game.add.sprite(100,100,'bullet');
-        mummy = game.add.sprite(100,100,'mummy');
-        weapon = game.add.weapon(30, 'bullet');
-        var walk = mummy.animations.add('walk');
-        mummy.animations.play('walk',30,true);
-        mummy.scale.set(1.5);
+      field = game.add.tileSprite(0,0,800,600,'backGround');
+      //land = game.add.tileSprite(0,450,800,150,'land');
+      land = game.add.sprite(-800,450,'land');
+      //bird = this.game.add.sprite(100,100,'bullet');
+      mummy = game.add.sprite(100,100,'mummy');
+      weapon = game.add.weapon(30, 'bullet');
+      var walk = mummy.animations.add('walk');
+      mummy.animations.play('walk',30,true);
+      mummy.scale.set(1.5);
 
-        backV = 1;
-        landV = 2;
+      backV = 1;
+      landV = 2;
 
-        playerJump = 0;
-        canJump = 2;
+      playerJump = 0;
+      canJump = 2;
 
-        text = game.add.text(game.world.centerX, game.world.centerY-250, 'Counter: 0M', { font: "24px Arial", fill: "#ffffff", align: "center" });
-        text.anchor.setTo(0.5, 0.5);
-        counter = 0;
+      text = game.add.text(game.world.centerX, game.world.centerY-250, 'Counter: 0M', { font: "24px Arial", fill: "#ffffff", align: "center" });
+      text.anchor.setTo(0.5, 0.5);
+      counter = 0;
 
-        game.input.onDown.add(this.jumpPlayer, this);
-        game.physics.startSystem(Phaser.Physics.ARCADE); // 물리를 적용합니다.
-        game.physics.arcade.enable(mummy); 
-        game.physics.arcade.enable(land);
-        //game.physics.arcade.enable(bird);
-        land.body.immovable = true;   //물리에 움직이지 않고 고정됨 
+      game.input.onDown.add(this.jumpPlayer, this);
+      game.physics.startSystem(Phaser.Physics.ARCADE); // 물리를 적용합니다.
+      game.physics.arcade.enable(mummy); 
+      game.physics.arcade.enable(land);
+      //game.physics.arcade.enable(bird);
+      land.body.immovable = true;   //물리에 움직이지 않고 고정됨 
 
-        mummy.body.gravity.y = 1000;
-        land.body.velocity.x = -rollSpeed;
-       // mummy.body.velocity.x = rollSpeed;
-    
-     this.pipes = game.add.group()   //파이프라는 이름의 빈 그룹 생성
+      mummy.body.gravity.y = 1000;
+      land.body.velocity.x = -rollSpeed;
+      // mummy.body.velocity.x = rollSpeed;
+      
+      this.pipes = game.add.group()   //파이프라는 이름의 빈 그룹 생성
 
-     this.timer = game.time.events.loop(platformTickTime, this.addRowOfPipes, this); 
+      this.timer = game.time.events.loop(platformTickTime, this.addRowOfPipes, this); 
 
-     game.time.events.loop(Phaser.Timer.SECOND/2, this.updateCounter, this); // 버티는 시간 (기록)
+      game.time.events.loop(Phaser.Timer.SECOND/2, this.updateCounter, this); // 버티는 시간 (기록)
       
       weapon = game.add.weapon(30, 'bullet');
       weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;    // 총알이 삭제되는 기준 
       weapon.bulletSpeed = 400;                                   //총알 속도
       weapon.fireRate = 60;
-      weapon.trackSprite(mummy, 30, 0, true); //캐릭터 방향대로 발사 
+      weapon.trackSprite(mummy, 30, 0, true); //z캐릭터에 귀속되어 캐릭터 방향대로 발사 
       game.physics.arcade.enable(weapon);
-      //weapon.bulletCollideWorldBounds=true;
+      
+      game.time.events.loop(Phaser.Timer.SECOND/2, this.playerFire, this);
+      //weapon.bullet.scale.setTo(0.5,0.5);
 
+
+    },
+
+    playerFire: function(){
+          weapon.fire();
     },
 
     update: function(){
@@ -126,15 +134,14 @@ var Game = {
            if(mummy.body.touching.down){
                playerJump = 0;  
            }
-            mummy.body.velocity.y = -400;
+            mummy.body.velocity.y = -450;
             playerJump++;
           
         }
-
-        weapon.fire();
+       // weapon.fire();
     },
 
-    addOnePipe: function(x,y){
+    addOnePipe: function(x,y){    //플랫폼 생성
         pipe = game.add.sprite(x, y,'pipe');
         //this.pipe = game.add.sprite(200,245,'pipe');
         this.pipes.add(pipe);   // 생성된 그룹에 추가
@@ -155,7 +162,7 @@ var Game = {
         pipe.outOfBoundsKill = true;  
     },
 
-    addRowOfPipes: function() {
+    addRowOfPipes: function() {     // 플랫폼을 그룹으로 생성함 
         //var hole = Math.floor(Math.random() * 2) + 1;
          var rand = game.rnd.realInRange(0,3); 
          var hole = game.rnd.realInRange(300,470);
@@ -167,16 +174,17 @@ var Game = {
          var rateAddMob = game.rnd.realInRange(0,100);
         
          if(rateAddMob > 50){
-            mob = game.add.sprite(650,hole-50,'mummy'); // 몹 생성
-            game.physics.arcade.enable(mob);          //몹에 물리를 적용함
-            //mob.body.gravity.y = 1000;
-          
-            mob.animations.play('walk',30,true);
 
-            mob.enableBody = true;
-            mob.physicsBodyType = Phaser.Physics.ARCADE;
-            mob.body.velocity.x = -platfromMoveSpeed;
-
+            if(rand > 1){
+              mob = game.add.sprite(650,hole-50,'mummy'); // 몹 생성
+              game.physics.arcade.enable(mob);          //몹에 물리를 적용함
+              //mob.body.gravity.y = 1000;
+            
+              mob.animations.play('walk',30,true);
+              mob.enableBody = true;
+              mob.physicsBodyType = Phaser.Physics.ARCADE;
+              mob.body.velocity.x = -platfromMoveSpeed;
+          }
         } 
     },
 
