@@ -1,0 +1,160 @@
+
+character_003.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bag
+  rotate: true
+  xy: 682, 174
+  size: 66, 85
+  orig: 66, 85
+  offset: 0, 0
+  index: -1
+body
+  rotate: true
+  xy: 418, 149
+  size: 91, 130
+  orig: 91, 130
+  offset: 0, 0
+  index: -1
+eye_01
+  rotate: false
+  xy: 249, 12
+  size: 55, 32
+  orig: 55, 32
+  offset: 0, 0
+  index: -1
+eye_02hurt
+  rotate: true
+  xy: 361, 65
+  size: 57, 53
+  orig: 57, 53
+  offset: 0, 0
+  index: -1
+eye_03die
+  rotate: false
+  xy: 301, 65
+  size: 58, 57
+  orig: 58, 57
+  offset: 0, 0
+  index: -1
+front_arm01
+  rotate: true
+  xy: 249, 46
+  size: 61, 50
+  orig: 61, 50
+  offset: 0, 0
+  index: -1
+front_arm02
+  rotate: false
+  xy: 418, 104
+  size: 60, 43
+  orig: 60, 43
+  offset: 0, 0
+  index: -1
+front_foot
+  rotate: false
+  xy: 351, 34
+  size: 53, 29
+  orig: 53, 29
+  offset: 0, 0
+  index: -1
+front_leg01
+  rotate: true
+  xy: 924, 191
+  size: 49, 82
+  orig: 49, 82
+  offset: 0, 0
+  index: -1
+front_leg02
+  rotate: false
+  xy: 306, 18
+  size: 43, 45
+  orig: 43, 45
+  offset: 0, 0
+  index: -1
+gun
+  rotate: false
+  xy: 550, 162
+  size: 130, 78
+  orig: 130, 78
+  offset: 0, 0
+  index: -1
+hair
+  rotate: true
+  xy: 847, 169
+  size: 71, 75
+  orig: 71, 75
+  offset: 0, 0
+  index: -1
+hand_01
+  rotate: false
+  xy: 351, 2
+  size: 36, 30
+  orig: 36, 30
+  offset: 0, 0
+  index: -1
+hand_02run
+  rotate: false
+  xy: 986, 148
+  size: 36, 41
+  orig: 36, 41
+  offset: 0, 0
+  index: -1
+head
+  rotate: false
+  xy: 292, 124
+  size: 124, 116
+  orig: 124, 116
+  offset: 0, 0
+  index: -1
+machine gun
+  rotate: false
+  xy: 2, 15
+  size: 245, 92
+  orig: 245, 92
+  offset: 0, 0
+  index: -1
+rear_arm01
+  rotate: false
+  xy: 416, 65
+  size: 58, 37
+  orig: 58, 37
+  offset: 0, 0
+  index: -1
+rear_arm02
+  rotate: false
+  xy: 924, 156
+  size: 60, 33
+  orig: 60, 33
+  offset: 0, 0
+  index: -1
+rear_foot
+  rotate: false
+  xy: 406, 37
+  size: 52, 26
+  orig: 52, 26
+  offset: 0, 0
+  index: -1
+rear_leg01
+  rotate: true
+  xy: 769, 172
+  size: 68, 76
+  orig: 68, 76
+  offset: 0, 0
+  index: -1
+rear_leg02
+  rotate: true
+  xy: 480, 107
+  size: 40, 58
+  orig: 40, 58
+  offset: 0, 0
+  index: -1
+rocket
+  rotate: false
+  xy: 2, 109
+  size: 288, 131
+  orig: 288, 131
+  offset: 0, 0
+  index: -1
